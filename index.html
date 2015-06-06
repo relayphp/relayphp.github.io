@@ -1,172 +1,194 @@
-# Pipeline
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Pipeline by pipelinephp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Pipeline</h1>
+      <h2 class="project-tagline">A PSR-7 middleware dispatcher.</h2>
+    </section>
 
-A PSR-7 middleware dispatcher.
+    <section class="main-content">
+      <h1>
+<a id="pipeline" class="anchor" href="#pipeline" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pipeline</h1>
 
-## Installation, Autoloading, and Tests
+<p>A PSR-7 middleware dispatcher.</p>
 
-This package is installable and PSR-4 autoloadable via Composer as `pipeline/pipeline`.
+<h2>
+<a id="installation-autoloading-and-tests" class="anchor" href="#installation-autoloading-and-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation, Autoloading, and Tests</h2>
 
-Alternatively, download a release or clone this repository, then map the `Pipeline\Pipeline\` namespace to the package `src/` directory.
+<p>This package is installable and PSR-4 autoloadable via Composer as <code>pipeline/pipeline</code>.</p>
 
-This package requires PHP 5.5 or later; it has been tested on PHP 5.6, PHP 7, and HHVM. We recommend using the latest available version of PHP as a matter of principle.
+<p>Alternatively, download a release or clone this repository, then map the <code>Pipeline\Pipeline\</code> namespace to the package <code>src/</code> directory.</p>
 
-To run the tests, issue `composer install` to install the test dependencies, then issue `phpunit`.
+<p>This package requires PHP 5.5 or later; it has been tested on PHP 5.6, PHP 7, and HHVM. We recommend using the latest available version of PHP as a matter of principle.</p>
 
-## Middleware Signature
+<p>To run the tests, issue <code>composer install</code> to install the test dependencies, then issue <code>phpunit</code>.</p>
 
-A _Pipeline_ middleware callable must have the following signature:
+<h2>
+<a id="middleware-signature" class="anchor" href="#middleware-signature" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Signature</h2>
 
-```php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+<p>A <em>Pipeline</em> middleware callable must have the following signature:</p>
 
-function (
-    Request $request,   // the incoming request
-    Response $response, // the outgoing response
-    callable $next      // the next middleware
-) {
-    // ...
-}
-```
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\Http\Message\ResponseInterface</span> <span class="pl-k">as</span> <span class="pl-c1">Response</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\Http\Message\ServerRequestInterface</span> <span class="pl-k">as</span> <span class="pl-c1">Request</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">function</span> (</span>
+<span class="pl-s1">    <span class="pl-c1">Request</span> <span class="pl-smi">$request</span>,   <span class="pl-c">// the incoming request</span></span>
+<span class="pl-s1">    <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c">// the outgoing response</span></span>
+<span class="pl-s1">    <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>      <span class="pl-c">// the next middleware</span></span>
+<span class="pl-s1">) {</span>
+<span class="pl-s1">    <span class="pl-c">// ...</span></span>
+<span class="pl-s1">}</span></pre></div>
 
-## Middleware Dispatching
+<h2>
+<a id="middleware-dispatching" class="anchor" href="#middleware-dispatching" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Dispatching</h2>
 
-Create a `$queue` array of middleware callables:
+<p>Create a <code>$queue</code> array of middleware callables:</p>
 
-```php
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // 1st middleware
-};
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// 1st middleware</span></span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// 2nd middleware</span></span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// ...</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// Nth middleware</span></span>
+<span class="pl-s1">};</span></pre></div>
 
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // 2nd middleware
-};
+<p>Create a <em>Pipeline</em> with the <code>$queue</code>, and invoke it with a request and response.</p>
 
-// ...
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@var</span> \Psr\Http\Message\ServerRequestInterface $request</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@var</span> \Psr\Http\Message\ResponseInterface $response</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Pipeline\Pipeline\Pipeline</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$dispatcher</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Pipeline</span>(<span class="pl-smi">$queue</span>);</span>
+<span class="pl-s1">$<span class="pl-smi">dispatcher</span>(<span class="pl-smi">$request</span>, <span class="pl-smi">$response</span>);</span></pre></div>
 
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // Nth middleware
-};
-```
+<p>That will execute each of the middlewares in first-in-first-out order.</p>
 
-Create a _Pipeline_ with the `$queue`, and invoke it with a request and response.
+<h2>
+<a id="middleware-logic" class="anchor" href="#middleware-logic" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Logic</h2>
 
-```php
-/**
- * @var \Psr\Http\Message\ServerRequestInterface $request
- * @var \Psr\Http\Message\ResponseInterface $response
- */
+<p>Your middleware logic should follow this pattern:</p>
 
-use Pipeline\Pipeline\Pipeline;
+<ul>
+<li><p>Receive the incoming request and response objects from the previous middleware as parameters, along with the next middleware as a callable.</p></li>
+<li><p>Optionally modify the received request and response as desired.</p></li>
+<li><p>Optionally invoke the next middleware with the request and response, receiving a new response in return.</p></li>
+<li><p>Optionally modify the returned response as desired.</p></li>
+<li><p>Return the response to the previous middleware.</p></li>
+</ul>
 
-$dispatcher = new Pipeline($queue);
-$dispatcher($request, $response);
-```
+<p>Here is a skeleton example; your own middleware may or may not perform the various optional processes:</p>
 
-That will execute each of the middlewares in first-in-first-out order.
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\Http\Message\ResponseInterface</span> <span class="pl-k">as</span> <span class="pl-c1">Response</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\Http\Message\ServerRequestInterface</span> <span class="pl-k">as</span> <span class="pl-c1">Request</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// optionally modify the incoming request</span></span>
+<span class="pl-s1">    <span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-smi">$request</span><span class="pl-k">-&gt;</span><span class="pl-k">...</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// optionally skip the $next middleware and return early</span></span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-k">...</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$response</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// optionally invoke the $next middleware and get back a new response</span></span>
+<span class="pl-s1">    <span class="pl-smi">$response</span> <span class="pl-k">=</span> $<span class="pl-smi">next</span>(<span class="pl-smi">$request</span>, <span class="pl-smi">$response</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// optionally modify the Response if desired</span></span>
+<span class="pl-s1">    <span class="pl-smi">$response</span> <span class="pl-k">=</span> <span class="pl-smi">$response</span><span class="pl-k">-&gt;</span><span class="pl-k">...</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// NOT OPTIONAL: return the Response to the previous middleware</span></span>
+<span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-smi">$response</span>;</span>
+<span class="pl-s1">};</span></pre></div>
 
-## Middleware Logic
+<blockquote>
+<p>N.b.: You should <strong>always</strong> return the response from your middleware logic.</p>
+</blockquote>
 
-Your middleware logic should follow this pattern:
+<p>Remember that the request and response are <strong>immutable</strong>. Implicit in that is the fact that changes to the request are always transmitted to the <code>$next</code> middleware but never to the previous one.</p>
 
-- Receive the incoming request and response objects from the previous middleware as parameters, along with the next middleware as a callable.
+<p>Note also that this logic chain means the request and response are subjected to two passes through each middleware:</p>
 
-- Optionally modify the received request and response as desired.
+<ul>
+<li><p>first on the way "in" through each middleware via the <code>$next</code> middleware invocation,</p></li>
+<li><p>then on the way "out" from each middleware via the <code>return</code> to the previous middleware.</p></li>
+</ul>
 
-- Optionally invoke the next middleware with the request and response, receiving a new response in return.
+<p>For example, if the middleware queue looks like this:</p>
 
-- Optionally modify the returned response as desired.
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// "Foo"</span></span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// "Bar"</span></span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-c1">Request</span> <span class="pl-smi">$request</span>, <span class="pl-c1">Response</span> <span class="pl-smi">$response</span>, <span class="pl-c1">callable</span> <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-c">// "Baz"</span></span>
+<span class="pl-s1">};</span></pre></div>
 
-- Return the response to the previous middleware.
+<p>... the request and response path through the middlewares will look like this:</p>
 
-Here is a skeleton example; your own middleware may or may not perform the various optional processes:
-
-```php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
-$queue[] = function (Request $request, Response $response, callable $next) {
-
-    // optionally modify the incoming request
-    $request = $request->...;
-
-    // optionally skip the $next middleware and return early
-    if (...) {
-        return $response;
-    }
-
-    // optionally invoke the $next middleware and get back a new response
-    $response = $next($request, $response);
-
-    // optionally modify the Response if desired
-    $response = $response->...;
-
-    // NOT OPTIONAL: return the Response to the previous middleware
-    return $response;
-};
-```
-
-> N.b.: You should **always** return the response from your middleware logic.
-
-Remember that the request and response are **immutable**. Implicit in that is the fact that changes to the request are always transmitted to the `$next` middleware but never to the previous one.
-
-Note also that this logic chain means the request and response are subjected to two passes through each middleware:
-
-- first on the way "in" through each middleware via the `$next` middleware invocation,
-
-- then on the way "out" from each middleware via the `return` to the previous middleware.
-
-For example, if the middleware queue looks like this:
-
-```php
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // "Foo"
-};
-
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // "Bar"
-};
-
-$queue[] = function (Request $request, Response $response, callable $next) {
-    // "Baz"
-};
-```
-
-... the request and response path through the middlewares will look like this:
-
-```
-Foo is 1st on the way in
+<pre><code>Foo is 1st on the way in
     Bar is 2nd on the way in
         Baz is 3rd on the way in, and 1st on the way out
     Bar is 2nd on the way out
 Foo is 3rd on the way out
-```
+</code></pre>
 
-You can use this dual-pass logic in clever and perhaps unintuitive ways. For example, middleware placed at the very start may do nothing with the request and call `$next` right away, but it is the middleware with the "real" last opportunity to modify the response.
+<p>You can use this dual-pass logic in clever and perhaps unintuitive ways. For example, middleware placed at the very start may do nothing with the request and call <code>$next</code> right away, but it is the middleware with the "real" last opportunity to modify the response.</p>
 
-## Resolvers
+<h2>
+<a id="resolvers" class="anchor" href="#resolvers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resolvers</h2>
 
-You may wish to use `$queue` entries other than anonymous functions. If so, you can pass a `$resolver` callable to the _Pipeline_ that will convert the `$queue` entry to a callable. Thus, using a `$resolver` allows you to pass in your own factory mechanism for `$queue` entries.
+<p>You may wish to use <code>$queue</code> entries other than anonymous functions. If so, you can pass a <code>$resolver</code> callable to the <em>Pipeline</em> that will convert the <code>$queue</code> entry to a callable. Thus, using a <code>$resolver</code> allows you to pass in your own factory mechanism for <code>$queue</code> entries.</p>
 
-For example, this `$resolver` will naively convert `$queue` string entries to new class instances:
+<p>For example, this <code>$resolver</code> will naively convert <code>$queue</code> string entries to new class instances:</p>
 
-```php
-$resolver = function ($class) {
-    return new $class();
-};
-```
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-smi">$resolver</span> <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-smi">$class</span>) {</span>
+<span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-smi">$class</span>();</span>
+<span class="pl-s1">};</span></pre></div>
 
-You can then add `$queue` entries as class names, and the _Pipeline_ will use the
-`$resolver` to create the objects in turn.
+<p>You can then add <code>$queue</code> entries as class names, and the <em>Pipeline</em> will use the
+<code>$resolver</code> to create the objects in turn.</p>
 
-```php
-use Pipeline\Pipeline\Pipeline;
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Pipeline\Pipeline\Pipeline</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>FooMiddleware<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>BarMiddleware<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>BazMiddleware<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$dispatcher</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Pipeline</span>(<span class="pl-smi">$queue</span>, <span class="pl-smi">$resolver</span>);</span></pre></div>
 
-$queue[] = 'FooMiddleware';
-$queue[] = 'BarMiddleware';
-$queue[] = 'BazMiddleware';
+<p>As long as the classes listed in the <code>$queue</code> implement <code>__invoke(Request $request, Response $response, callable $next)</code>, then the <em>Pipeline</em> will work correctly.</p>
 
-$dispatcher = new Pipeline($queue, $resolver);
-```
+      <footer class="site-footer">
 
-As long as the classes listed in the `$queue` implement `__invoke(Request $request, Response $response, callable $next)`, then the _Pipeline_ will work correctly.
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
