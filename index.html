@@ -11,17 +11,13 @@
   </head>
   <body>
     <section class="page-header">
-      <img src="/pipeline.png" />
+      <img src="/pipeline.php" />
+      <h2 class="project-tagline">A PSR-7 middleware dispatcher.</h1>
     </section>
 
     <section class="main-content">
-      <h1>
-<a id="pipeline" class="anchor" href="#pipeline" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pipeline</h1>
-
-<p>A PSR-7 middleware dispatcher.</p>
-
-<h2>
-<a id="installation-autoloading-and-tests" class="anchor" href="#installation-autoloading-and-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation, Autoloading, and Tests</h2>
+<h1>
+<a id="installation-autoloading-and-tests" class="anchor" href="#installation-autoloading-and-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation, Autoloading, and Tests</h1>
 
 <p>This package is installable and PSR-4 autoloadable via Composer as <code>pipeline/pipeline</code>.</p>
 
@@ -31,8 +27,8 @@
 
 <p>To run the tests, issue <code>composer install</code> to install the test dependencies, then issue <code>phpunit</code>.</p>
 
-<h2>
-<a id="middleware-signature" class="anchor" href="#middleware-signature" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Signature</h2>
+<h1>
+<a id="middleware-signature" class="anchor" href="#middleware-signature" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Signature</h1>
 
 <p>A <em>Pipeline</em> middleware callable must have the following signature:</p>
 
@@ -47,8 +43,8 @@
 <span class="pl-s1">    <span class="pl-c">// ...</span></span>
 <span class="pl-s1">}</span></pre></div>
 
-<h2>
-<a id="middleware-dispatching" class="anchor" href="#middleware-dispatching" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Dispatching</h2>
+<h1>
+<a id="middleware-dispatching" class="anchor" href="#middleware-dispatching" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Dispatching</h1>
 
 <p>Create a <code>$queue</code> array of middleware callables:</p>
 
@@ -80,8 +76,8 @@
 
 <p>That will execute each of the middlewares in first-in-first-out order.</p>
 
-<h2>
-<a id="middleware-logic" class="anchor" href="#middleware-logic" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Logic</h2>
+<h1>
+<a id="middleware-logic" class="anchor" href="#middleware-logic" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middleware Logic</h1>
 
 <p>Your middleware logic should follow this pattern:</p>
 
@@ -156,8 +152,8 @@ Foo is 3rd on the way out
 
 <p>You can use this dual-pass logic in clever and perhaps unintuitive ways. For example, middleware placed at the very start may do nothing with the request and call <code>$next</code> right away, but it is the middleware with the "real" last opportunity to modify the response.</p>
 
-<h2>
-<a id="resolvers" class="anchor" href="#resolvers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resolvers</h2>
+<h1>
+<a id="resolvers" class="anchor" href="#resolvers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resolvers</h1>
 
 <p>You may wish to use <code>$queue</code> entries other than anonymous functions. If so, you can pass a <code>$resolver</code> callable to the <em>Pipeline</em> that will convert the <code>$queue</code> entry to a callable. Thus, using a <code>$resolver</code> allows you to pass in your own factory mechanism for <code>$queue</code> entries.</p>
 
