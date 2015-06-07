@@ -15,10 +15,6 @@ a {
   a:hover {
     text-decoration: underline; }
 
-.page-header a {
-  color: black;
-}
-
 .btn {
   display: inline-block;
   margin-bottom: 1rem;
@@ -247,3 +243,7 @@ a {
 @media screen and (max-width: 42em) {
   .site-footer {
     font-size: 0.9rem; } }
+
+.page-header a {
+  color: white;
+}
