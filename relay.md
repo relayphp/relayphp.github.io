@@ -1,6 +1,6 @@
 # Middleware Signature
 
-A _Pipeline_ middleware callable must have the following signature:
+A _Relay_ middleware callable must have the following signature:
 
 ```php
 use Psr\Http\Message\ResponseInterface as Response;
@@ -15,7 +15,7 @@ function (
 }
 ```
 
-A _Pipeline_ middleware callable must return an implementation of _Psr\Http\Message\ResponseInterface_.
+A _Relay_ middleware callable must return an implementation of _Psr\Http\Message\ResponseInterface_.
 
 # Middleware Dispatching
 
@@ -37,7 +37,7 @@ $queue[] = function (Request $request, Response $response, callable $next) {
 };
 ```
 
-Create a _Pipeline_ with the `$queue`, and invoke it with a request and response.
+Create a _Relay_ with the `$queue`, and invoke it with a request and response.
 
 ```php
 /**
@@ -45,9 +45,9 @@ Create a _Pipeline_ with the `$queue`, and invoke it with a request and response
  * @var \Psr\Http\Message\ResponseInterface $response
  */
 
-use Pipeline\Pipeline\Pipeline;
+use Relay\Relay\Relay;
 
-$dispatcher = new Pipeline($queue);
+$dispatcher = new Relay($queue);
 $dispatcher($request, $response);
 ```
 
@@ -134,7 +134,7 @@ You can use this dual-pass logic in clever and perhaps unintuitive ways. For exa
 
 # Resolvers
 
-You may wish to use `$queue` entries other than anonymous functions. If so, you can pass a `$resolver` callable to the _Pipeline_ that will convert the `$queue` entry to a callable. Thus, using a `$resolver` allows you to pass in your own factory mechanism for `$queue` entries.
+You may wish to use `$queue` entries other than anonymous functions. If so, you can pass a `$resolver` callable to the _Relay_ that will convert the `$queue` entry to a callable. Thus, using a `$resolver` allows you to pass in your own factory mechanism for `$queue` entries.
 
 For example, this `$resolver` will naively convert `$queue` string entries to new class instances:
 
@@ -144,42 +144,42 @@ $resolver = function ($class) {
 };
 ```
 
-You can then add `$queue` entries as class names, and the _Pipeline_ will use the
+You can then add `$queue` entries as class names, and the _Relay_ will use the
 `$resolver` to create the objects in turn.
 
 ```php
-use Pipeline\Pipeline\Pipeline;
+use Relay\Relay\Relay;
 
 $queue[] = 'FooMiddleware';
 $queue[] = 'BarMiddleware';
 $queue[] = 'BazMiddleware';
 
-$dispatcher = new Pipeline($queue, $resolver);
+$dispatcher = new Relay($queue, $resolver);
 ```
 
-As long as the classes listed in the `$queue` implement `__invoke(Request $request, Response $response, callable $next)`, then the _Pipeline_ will work correctly.
+As long as the classes listed in the `$queue` implement `__invoke(Request $request, Response $response, callable $next)`, then the _Relay_ will work correctly.
 
-# Queue Object and Pipeline Builder
+# Queue Object and Relay Builder
 
 Sometimes using an array for the `$queue` will not be suitable. You may wish to use an object to build retain the middleware queue.
 
-If so, you can use the _PipelineBuilder_ to create the _Pipeline_ queue from any object that extends _ArrayObject_ or that implements _Pipeline\Pipeline\GetArrayCopyInterface_. The _PipelineBuilder_ will then get an array copy of that queue object for the _Pipeline_.
+If so, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
 
-For example, if your `$queue` is an _ArrayObject_, first instantiate a _PipelineBuilder_ with an optional `$resolver` ...
+For example, if your `$queue` is an _ArrayObject_, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
 
 ```php
-use Pipeline\Pipeline\PipelineBuilder;
+use Relay\Relay\RelayBuilder;
 
-$builder = new PipelineBuilder($resolver);
+$builder = new RelayBuilder($resolver);
 ```
 
-... then instantiate a _Pipeline_ where `$queue` is an array, an _ArrayObject_, or a _Pipeline\Pipeline\GetArrayCopyInterface_ implementation:
+... then instantiate a _Relay_ where `$queue` is an array, an _ArrayObject_, or a _Relay\Relay\GetArrayCopyInterface_ implementation:
 
 ```php
 /**
- * var array|ArrayObject|Pipeline\Pipeline\GetArrayCopyInterface $queue
+ * var array|ArrayObject|Relay\Relay\GetArrayCopyInterface $queue
  */
-$pipeline = $builder->newInstance($queue);
+$relay = $builder->newInstance($queue);
 ```
 
-You can then use the `$pipeline` as described above.
+You can then use the `$relay` as described above.
