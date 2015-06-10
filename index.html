@@ -63,7 +63,7 @@
 <span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@var</span> \Psr\Http\Message\ResponseInterface $response</span></span>
 <span class="pl-s1"><span class="pl-c"> */</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\Relay\Relay</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\Relay</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$dispatcher</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Relay</span>(<span class="pl-smi">$queue</span>);</span>
 <span class="pl-s1">$<span class="pl-smi">dispatcher</span>(<span class="pl-smi">$request</span>, <span class="pl-smi">$response</span>);</span></pre></div>
@@ -160,7 +160,7 @@ Foo is 3rd on the way out
 <p>You can then add <code>$queue</code> entries as class names, and the <em>Relay</em> will use the
 <code>$resolver</code> to create the objects in turn.</p>
 
-<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\Relay\Relay</span>;</span>
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\Relay</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>FooMiddleware<span class="pl-pds">'</span></span>;</span>
 <span class="pl-s1"><span class="pl-smi">$queue</span>[] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>BarMiddleware<span class="pl-pds">'</span></span>;</span>
@@ -173,11 +173,11 @@ Foo is 3rd on the way out
 <h1>
 <a id="queue-object-and-relay-builder" class="anchor" href="#queue-object-and-relay-builder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Queue Object and Relay Builder</h1>
 
-<p>Sometimes using an array for the <code>$queue</code> will not be suitable. You may wish to use an object to build retain the middleware queue. If so, you can use the <em>RelayBuilder</em> to create the <em>Relay</em> from any queue object that extends <em>ArrayObject</em> or that implements <em>Relay\Relay\GetArrayCopyInterface</em>. The <em>RelayBuilder</em> will then get an array copy of the queue for the <em>Relay</em>.</p>
+<p>Sometimes using an array for the <code>$queue</code> will not be suitable. You may wish to use an object to build retain the middleware queue. If so, you can use the <em>RelayBuilder</em> to create the <em>Relay</em> from any queue object that extends <em>ArrayObject</em> or that implements <em>Relay\GetArrayCopyInterface</em>. The <em>RelayBuilder</em> will then get an array copy of the queue for the <em>Relay</em>.</p>
 
 <p>For example, if your <code>$queue</code> is an <em>ArrayObject</em>, you can create the <em>RelayBuilder</em> with an optional <code>$resolver</code> ...</p>
 
-<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\Relay\RelayBuilder</span>;</span>
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Relay\RelayBuilder</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$builder</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">RelayBuilder</span>(<span class="pl-smi">$resolver</span>);</span></pre></div>
 

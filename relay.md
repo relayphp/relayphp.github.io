@@ -45,7 +45,7 @@ Create a _Relay_ with the `$queue`, and invoke it with a request and response.
  * @var \Psr\Http\Message\ResponseInterface $response
  */
 
-use Relay\Relay\Relay;
+use Relay\Relay;
 
 $dispatcher = new Relay($queue);
 $dispatcher($request, $response);
@@ -148,7 +148,7 @@ You can then add `$queue` entries as class names, and the _Relay_ will use the
 `$resolver` to create the objects in turn.
 
 ```php
-use Relay\Relay\Relay;
+use Relay\Relay;
 
 $queue[] = 'FooMiddleware';
 $queue[] = 'BarMiddleware';
@@ -163,21 +163,21 @@ As long as the classes listed in the `$queue` implement `__invoke(Request $reque
 
 Sometimes using an array for the `$queue` will not be suitable. You may wish to use an object to build retain the middleware queue.
 
-If so, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
+If so, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
 
 For example, if your `$queue` is an _ArrayObject_, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
 
 ```php
-use Relay\Relay\RelayBuilder;
+use Relay\RelayBuilder;
 
 $builder = new RelayBuilder($resolver);
 ```
 
-... then instantiate a _Relay_ where `$queue` is an array, an _ArrayObject_, or a _Relay\Relay\GetArrayCopyInterface_ implementation:
+... then instantiate a _Relay_ where `$queue` is an array, an _ArrayObject_, or a _Relay\GetArrayCopyInterface_ implementation:
 
 ```php
 /**
- * var array|ArrayObject|Relay\Relay\GetArrayCopyInterface $queue
+ * var array|ArrayObject|Relay\GetArrayCopyInterface $queue
  */
 $relay = $builder->newInstance($queue);
 ```
