@@ -126,13 +126,11 @@ $queue[] = function (Request $request, Response $response, callable $next) {
 
 ... the request and response path through the middlewares will look like this:
 
-{% endhighlight %}
-Foo is 1st on the way in
-    Bar is 2nd on the way in
-        Baz is 3rd on the way in, and 1st on the way out
-    Bar is 2nd on the way out
-Foo is 3rd on the way out
-{% endhighlight %}
+    Foo is 1st on the way in
+        Bar is 2nd on the way in
+            Baz is 3rd on the way in, and 1st on the way out
+        Bar is 2nd on the way out
+    Foo is 3rd on the way out
 
 You can use this dual-pass logic in clever and perhaps unintuitive ways. For example, middleware placed at the very start may do nothing with the request and call `$next` right away, but it is the middleware with the "real" last opportunity to modify the response.
 
