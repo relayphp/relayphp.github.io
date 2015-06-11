@@ -1,3 +1,7 @@
+---
+layout: site
+---
+
 # Middleware Signature
 
 A _Relay_ middleware callable must have the following signature:
