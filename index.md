@@ -7,7 +7,6 @@ layout: site
 A _Relay_ middleware callable must have the following signature:
 
 {% highlight php %}
-<?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -18,7 +17,6 @@ function (
 ) {
     // ...
 }
-?>
 {% endhighlight %}
 
 A _Relay_ middleware callable must return an implementation of _Psr\Http\Message\ResponseInterface_.
@@ -28,7 +26,6 @@ A _Relay_ middleware callable must return an implementation of _Psr\Http\Message
 Create a `$queue` array of middleware callables:
 
 {% highlight php %}
-<?php
 $queue[] = function (Request $request, Response $response, callable $next) {
     // 1st middleware
 };
@@ -42,13 +39,11 @@ $queue[] = function (Request $request, Response $response, callable $next) {
 $queue[] = function (Request $request, Response $response, callable $next) {
     // Nth middleware
 };
-?>
 {% endhighlight %}
 
 Create a _Relay_ with the `$queue`, and invoke it with a request and response.
 
 {% highlight php %}
-<?php
 /**
  * @var \Psr\Http\Message\ServerRequestInterface $request
  * @var \Psr\Http\Message\ResponseInterface $response
@@ -58,7 +53,6 @@ use Relay\Relay;
 
 $dispatcher = new Relay($queue);
 $dispatcher($request, $response);
-?>
 {% endhighlight %}
 
 That will execute each of the middlewares in first-in-first-out order.
@@ -80,7 +74,6 @@ Your middleware logic should follow this pattern:
 Here is a skeleton example; your own middleware may or may not perform the various optional processes:
 
 {% highlight php %}
-<?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -103,7 +96,6 @@ $queue[] = function (Request $request, Response $response, callable $next) {
     // NOT OPTIONAL: return the Response to the previous middleware
     return $response;
 };
-?>
 {% endhighlight %}
 
 > N.b.: You MUST return the response from your middleware logic.
@@ -119,7 +111,6 @@ Note also that this logic chain means the request and response are subjected to 
 For example, if the middleware queue looks like this:
 
 {% highlight php %}
-<?php
 $queue[] = function (Request $request, Response $response, callable $next) {
     // "Foo"
 };
@@ -131,7 +122,6 @@ $queue[] = function (Request $request, Response $response, callable $next) {
 $queue[] = function (Request $request, Response $response, callable $next) {
     // "Baz"
 };
-?>
 {% endhighlight %}
 
 ... the request and response path through the middlewares will look like this:
@@ -151,18 +141,15 @@ You may wish to use `$queue` entries other than anonymous functions. If so, you 
 For example, this `$resolver` will naively convert `$queue` string entries to new class instances:
 
 {% highlight php %}
-<?php
 $resolver = function ($class) {
     return new $class();
 };
-?>
 {% endhighlight %}
 
 You can then add `$queue` entries as class names, and the _Relay_ will use the
 `$resolver` to create the objects in turn.
 
 {% highlight php %}
-<?php
 use Relay\Relay;
 
 $queue[] = 'FooMiddleware';
@@ -170,7 +157,6 @@ $queue[] = 'BarMiddleware';
 $queue[] = 'BazMiddleware';
 
 $dispatcher = new Relay($queue, $resolver);
-?>
 {% endhighlight %}
 
 As long as the classes listed in the `$queue` implement `__invoke(Request $request, Response $response, callable $next)`, then the _Relay_ will work correctly.
@@ -184,22 +170,18 @@ If so, you can use the _RelayBuilder_ to create the _Relay_ queue from any objec
 For example, if your `$queue` is an _ArrayObject_, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
 
 {% highlight php %}
-<?php
 use Relay\RelayBuilder;
 
 $builder = new RelayBuilder($resolver);
-?>
 {% endhighlight %}
 
 ... then instantiate a _Relay_ where `$queue` is an array, an _ArrayObject_, or a _Relay\GetArrayCopyInterface_ implementation:
 
 {% highlight php %}
-<?php
 /**
  * var array|ArrayObject|Relay\GetArrayCopyInterface $queue
  */
 $relay = $builder->newInstance($queue);
-?>
 {% endhighlight %}
 
 You can then use the `$relay` as described above.
