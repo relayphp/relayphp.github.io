@@ -2,8 +2,6 @@
 layout: site
 ---
 
-_Relay_ is usable both as a server and as a client. That is, it can receive an incoming _ServerRequestInterface_ and generate an outgoing _ResponseInterface_ (acting as a server), or it can build an outgoing _RequestInterface_ and hand back a returned _ResponseInterface_ (acting as a client).
-
 # Middleware Signature
 
 A _Relay_ middleware callable must have the following signature:
@@ -25,7 +23,9 @@ function (
 
 A _Relay_ middleware callable must return an implementation of _Psr\Http\Message\ResponseInterface_.
 
-> N.b.: Psr\Http\Message\ServerRequestInterface extends RequestInterface, so the above signature covers both the server-related and client-related use cases.
+This signature makes _Relay_ appropriate for both server-related and client-related use cases. That is, it can receive an incoming _ServerRequestInterface_ and generate an outgoing _ResponseInterface_ (acting as a server), or it can build an outgoing _RequestInterface_ and return the resulting _ResponseInterface_ (acting as a client).
+
+> N.b.: Psr\Http\Message\ServerRequestInterface extends RequestInterface, so typehinting to RequestInterface covers both use cases.
 
 # Middleware Dispatching
 
