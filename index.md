@@ -1,7 +1,6 @@
 ---
 layout: site
 ---
-NOTE: Relay recently received some backwards-compatiblilty breaking changes. You may wish to lock your composer.json entry to [0.2.0](https://github.com/relayphp/Relay.Relay/releases/tag/0.2.0), then read the most-recent [CHANGES](https://github.com/relayphp/Relay.Relay/blob/1.x/CHANGES.md) and/or the new documentation below, before upgrading to the 1.x development version.
 
 # Middleware Signature
 
