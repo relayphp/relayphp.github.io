@@ -169,7 +169,7 @@ As long as the classes listed in the `$queue` implement `__invoke(Request $reque
 
 # Queue Object
 
-Sometimes using an array for the `$queue` will not be suitable. You may wish to use an object to build retain the middleware queue instead.
+Sometimes using an array for the `$queue` will not be suitable. You may wish to use an object to build the middleware queue instead.
 
 In these cases, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
 
