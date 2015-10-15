@@ -192,7 +192,7 @@ $relay = $relayBuilder->newInstance($queue);
 
 You can then use the `$relay` as described above.
 
-# Resuable Relays
+# Reusable Relays
 
 If you wish, you can reuse the same _Relay_ object multiple times. The same middleware queue will be used each time you invoke that _Relay_. For example, if you are making multiple client requests:
 
