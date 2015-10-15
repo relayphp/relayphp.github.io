@@ -173,7 +173,7 @@ Sometimes using an array for the `$queue` will not be suitable. You may wish to 
 
 In these cases, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
 
-For example, if your `$queue` is an _ArrayObject_, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
+For example, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
 
 {% highlight php %}
 use Relay\RelayBuilder;
