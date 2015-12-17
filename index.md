@@ -194,7 +194,7 @@ You can then use the `$relay` as described above.
 
 ## Traversable
 
-In Relay 1.1, the _RelayBuilder_ will also accept any _Traversable_ implementation, and convert it to an array using `iterator_to_array()`.  For backwards compatibility with Relay 1.0, `iterator_to_array()` is only called on _Traversable_s that are not _ArrayObject_s and that do not implement _Relay\GetArrayCopyInterface_.
+In Relay 1.1, the _RelayBuilder_ will also accept any _Traversable_ implementation, and convert it to an array using `iterator_to_array()`.  For backwards compatibility with Relay 1.0, `iterator_to_array()` is only called on a _Traversable_ that is not an _ArrayObject_ and that does not implement _Relay\GetArrayCopyInterface_.
 
 # Resuable Relays
 
