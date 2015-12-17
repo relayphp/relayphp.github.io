@@ -192,6 +192,10 @@ $relay = $relayBuilder->newInstance($queue);
 
 You can then use the `$relay` as described above.
 
+## Traversable
+
+In Relay 1.1, the _RelayBuilder_ will also accept any _Traversable_ implementation, and convert it to an array using `iterator_to_array()`.  For backwards compatibility with Relay 1.0, `iterator_to_array()` is only called on _Traversable_s that are not _ArrayObject_s and that do not implement _Relay\GetArrayCopyInterface_.
+
 # Resuable Relays
 
 If you wish, you can reuse the same _Relay_ object multiple times. The same middleware queue will be used each time you invoke that _Relay_. For example, if you are making multiple client requests:
