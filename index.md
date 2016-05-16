@@ -2,7 +2,7 @@
 layout: site
 ---
 
-> For middleware to use with Relay, please review [Relay.Middleware](https://github.com/relayphp/Relay.Middleware) and [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares).
+<p style="font-size: 90%; text-align: center;">For middleware to use with Relay, please review [Relay.Middleware](https://github.com/relayphp/Relay.Middleware) and [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares).</p>
 
 # Middleware Signature
 
