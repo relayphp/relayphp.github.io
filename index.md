@@ -2,6 +2,8 @@
 layout: site
 ---
 
+> For middleware to use with Relay, please review [Relay.Middleware](https://github.com/relayphp/Relay.Middleware) and [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares).
+
 # Middleware Signature
 
 A _Relay_ middleware callable must have the following signature:
