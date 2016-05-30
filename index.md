@@ -2,52 +2,57 @@
 layout: site
 ---
 
-<div style="font-size: 80%; text-align: center; color: gray;">For middleware to use with Relay, please review <a href="https://github.com/relayphp/Relay.Middleware">Relay.Middleware</a> and <a href="https://github.com/oscarotero/psr7-middlewares">oscarotero/psr7-middlewares</a>.</div>
+<div style="font-size: 80%; text-align: center; color: gray;">For middleware to use with Telegraph, please review <a href="https://github.com/telegraphp/telegraph.middleware">telegraph/middleware</a>.</div>
 
 # Middleware Signature
 
-A _Relay_ middleware callable must have the following signature:
+A _Telegraph_ middleware callable must have the following signature:
 
 {% highlight php %}
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\RequestInterface;
 
 function (
-    Request $request,   // the request
-    Response $response, // the response
-    callable $next      // the next middleware
+    RequestInterface $request, // the HTTP request
+    callable $next    // a dispatcher to the next middleware
 ) {
     // ...
 }
 {% endhighlight %}
 
-A _Relay_ middleware callable must return an implementation of _Psr\Http\Message\ResponseInterface_.
+A _Telegraph_ middleware callable must return an implementation of
+_Psr\Http\Message\ResponseInterface_.
 
-This signature makes _Relay_ appropriate for both server-related and client-related use cases. That is, it can receive an incoming _ServerRequestInterface_ and generate an outgoing _ResponseInterface_ (acting as a server), or it can build an outgoing _RequestInterface_ and return the resulting _ResponseInterface_ (acting as a client).
+This signature makes _Telegraph_ appropriate for both server-related and client-
+related use cases. That is, it can receive an incoming _ServerRequestInterface_
+and generate an outgoing _ResponseInterface_ (acting as a server), or it can
+build an outgoing _RequestInterface_ and return the resulting
+_ResponseInterface_ (acting as a client).
 
-> N.b.: Psr\Http\Message\ServerRequestInterface extends RequestInterface, so typehinting to RequestInterface covers both use cases.
+> N.b.: Psr\Http\Message\ServerRequestInterface extends RequestInterface, so
+> typehinting to RequestInterface covers both use cases.
 
 # Middleware Dispatching
 
 Create a `$queue` array of middleware callables:
 
 {% highlight php %}
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // 1st middleware
 };
 
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // 2nd middleware
 };
 
 // ...
 
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // Nth middleware
 };
 {% endhighlight %}
 
-Use the _RelayBuilder_ to create a _Relay_ with the `$queue`, and invoke the _Relay_ with a request and response.
+Use the _TelegraphFactory_ to create a _Telegraph_ object with the `$queue`,
+and dispatch a request through the _Telegraph_ object to get back a response.
 
 {% highlight php %}
 /**
@@ -55,11 +60,11 @@ Use the _RelayBuilder_ to create a _Relay_ with the `$queue`, and invoke the _Re
  * @var \Psr\Http\Message\ResponseInterface $response
  */
 
-use Relay\RelayBuilder;
+use Telegraph\TelegraphFactory;
 
-$relayBuilder = new RelayBuilder();
-$relay = $relayBuilder->newInstance($queue);
-$response = $relay($request, $response);
+$telegraphFactory = new TelegraphFactory();
+$telegraph = $telegraphFactory->newInstance($queue);
+$response = $telegraph->dispatch($request);
 {% endhighlight %}
 
 That will execute each of the middlewares in first-in-first-out order.
@@ -68,34 +73,37 @@ That will execute each of the middlewares in first-in-first-out order.
 
 Your middleware logic should follow this pattern:
 
-- Receive the request and response objects from the previous middleware as parameters, along with the next middleware as a callable.
+- Receive the request object from the previous middleware as a parameter, along
+  with a dispatcher to the `$next` middleware;
 
-- Optionally modify the received request and response as desired.
+- Optionally modify the received request;
 
-- Optionally invoke the next middleware with the request and response, receiving a new response in return.
+- Then either ...
 
-- Optionally modify the returned response as desired.
+    - Create a response and return it to the previous middleware.
 
-- Return the response to the previous middleware.
+- ... or:
 
-Here is a skeleton example; your own middleware may or may not perform the various optional processes:
+    - Dispatch the request through the `$next` middleware, receiving a response
+      in return;
+
+    - Optionally modify the returned response;
+
+    - Return the response to the previous middleware.
+
+Here is a skeleton example; your own middleware may or may not perform the
+various optional processes:
 
 {% highlight php %}
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\RequestInterface;
 
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
 
-    // optionally modify the incoming request
+    // optionally modify the incoming Request
     $request = $request->...;
 
-    // optionally skip the $next middleware and return early
-    if (...) {
-        return $response;
-    }
-
-    // optionally invoke the $next middleware and get back a new response
-    $response = $next($request, $response);
+    // optionally dispatch the $next middleware and get back a Response
+    $response = $next($request);
 
     // optionally modify the Response if desired
     $response = $response->...;
@@ -105,33 +113,33 @@ $queue[] = function (Request $request, Response $response, callable $next) {
 };
 {% endhighlight %}
 
-> N.b.: You MUST return the response from your middleware logic.
+> N.b.: You MUST return the response from your middleware logic, whether by
+> creating it or by using the one returned from the `$next` middleware.
 
-Remember that the request and response are **immutable**. Implicit in that is the fact that changes to the request are always transmitted to the `$next` middleware but never to the previous one.
+As a reminder, remember that the request is **immutable**. Implicit in that is
+the fact that changes to the request are always transmitted to the `$next`
+middleware but never to the previous one.
 
-Note also that this logic chain means the request and response are subjected to two passes through each middleware:
-
-- first on the way "in" through each middleware via the `$next` middleware invocation,
-
-- then on the way "out" from each middleware via the `return` to the previous middleware.
+Note also that this logic chain means the request is modified on the way "in"
+through the middleware, and  the response is modified on the way "out".
 
 For example, if the middleware queue looks like this:
 
 {% highlight php %}
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // "Foo"
 };
 
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // "Bar"
 };
 
-$queue[] = function (Request $request, Response $response, callable $next) {
+$queue[] = function (RequestInterface $request, callable $next) {
     // "Baz"
 };
 {% endhighlight %}
 
-... the request and response path through the middlewares will look like this:
+... the path through the middlewares will look like this:
 
     Foo is 1st on the way in
         Bar is 2nd on the way in
@@ -139,13 +147,44 @@ $queue[] = function (Request $request, Response $response, callable $next) {
         Bar is 2nd on the way out
     Foo is 3rd on the way out
 
-You can use this dual-pass logic in clever and perhaps unintuitive ways. For example, middleware placed at the very start may do nothing with the request and call `$next` right away, but it is the middleware with the "real" last opportunity to modify the response.
+You can use this dual-pass logic in clever and perhaps unintuitive ways. For
+example, middleware placed at the very start may do nothing with the request
+and call `$next` right away, but it is the middleware with the "real" last
+opportunity to modify the response.
+
+# Creating Responses
+
+At some point, one of your middleware callables will need to create a response
+to return to the previous middleware. Because there are different response
+implementations, _Telegraph_ will not create one for you; the choice of
+response implementation is up to you.
+
+Here is an example of a response-creating middleware:
+
+{% highlight php %}
+use Psr\Http\Message\RequestInterface;
+use Zend\Diactoros\Response;
+
+$queue[] = function (RequestInterface $request, callable $next) {
+    return new Response();
+}
+{% endhighlight %}
+
+In general, there should be no need to call `$next` at this point; merely
+return the response to start its journey back through the middleware queue. As
+such, the response-creating middleware entry is probably going to the the very
+last one in the queue.
 
 # Resolvers
 
-You may wish to use `$queue` entries other than anonymous functions or already-instantiated objects. If so, you can pass a `$resolver` callable to the _Relay_ that will convert the `$queue` entry to a callable. Thus, using a `$resolver` allows you to pass in your own factory mechanism for `$queue` entries.
+You may wish to use `$queue` entries other than anonymous functions or already-
+instantiated objects. If so, you can pass a `$resolver` callable to the
+_Telegraph_ that will convert the `$queue` entry to a callable. Thus, using a
+`$resolver` allows you to pass in your own factory mechanism for `$queue`
+entries.
 
-For example, this `$resolver` will naively convert `$queue` string entries to new class instances:
+For example, this `$resolver` will naively convert `$queue` string entries to
+new class instances:
 
 {% highlight php %}
 $resolver = function ($class) {
@@ -153,54 +192,62 @@ $resolver = function ($class) {
 };
 {% endhighlight %}
 
-You can then add `$queue` entries as class names, and the _Relay_ will use the
+You can then add `$queue` entries as class names, and _Telegraph_ will use the
 `$resolver` to create the objects in turn.
 
 {% highlight php %}
-use Relay\RelayBuilder;
+use Telegraph\TelegraphFactory;
 
 $queue[] = 'FooMiddleware';
 $queue[] = 'BarMiddleware';
 $queue[] = 'BazMiddleware';
 
-$relayBuilder = new RelayBuilder($resolver);
-$relay = $relayBuilder->newInstance($queue);
+$telegraphFactory = new TelegraphFactory($resolver);
+$telegraph = $telegraphFactory->newInstance($queue);
 {% endhighlight %}
 
-As long as the classes listed in the `$queue` implement `__invoke(Request $request, Response $response, callable $next)`, then the _Relay_ will work correctly.
+As long as the classes listed in the `$queue` implement
+`__invoke(RequestInterface $request, callable $next)`, then _Telegraph_ will work
+correctly.
 
 # Queue Object
 
-Sometimes using an array for the `$queue` will not be suitable. You may wish to use an object to build the middleware queue instead.
+Sometimes using an array for the `$queue` will not be suitable. You may wish to
+use an object to build the middleware queue instead.
 
-In these cases, you can use the _RelayBuilder_ to create the _Relay_ queue from any object that extends _ArrayObject_ or that implements _Relay\GetArrayCopyInterface_. The _RelayBuilder_ will then get an array copy of that queue object for the _Relay_.
+In these cases, you can use the _TelegraphFactory_ to create the _Telegraph_
+queue from any object that eimplements _Traversable_. The _TelegraphFactory_
+will then convert that queue object to an array using `iterator_to_array()`.
 
-For example, first instantiate a _RelayBuilder_ with an optional `$resolver` ...
+For example, first instantiate a _TelegraphFactory_ with an optional
+`$resolver` ...
 
 {% highlight php %}
-use Relay\RelayBuilder;
+use Telegraph\TelegraphFactory;
 
-$relayBuilder = new RelayBuilder($resolver);
+$telegraphFactory = new TelegraphFactory($resolver);
 {% endhighlight %}
 
-... then instantiate a _Relay_ where `$queue` is an array, an _ArrayObject_, or a _Relay\GetArrayCopyInterface_ implementation:
+... then instantiate a _Telegraph_ object where the `$queue` is a _Traversable_
+implementation:
 
 {% highlight php %}
+use Traversable;
+
 /**
- * var array|ArrayObject|Relay\GetArrayCopyInterface $queue
+ * var Traversable $queue
  */
-$relay = $relayBuilder->newInstance($queue);
+$telegraph = $telegraphFactory->newInstance($queue);
 {% endhighlight %}
 
-You can then use the `$relay` as described above.
+You can then dispatch through the `$telegraph` as described above.
 
-## Traversable
 
-In Relay 1.1, the _RelayBuilder_ will also accept any _Traversable_ implementation, and convert it to an array using `iterator_to_array()`.  For backwards compatibility with Relay 1.0, `iterator_to_array()` is only called on a _Traversable_ that is not an _ArrayObject_ and that does not implement _Relay\GetArrayCopyInterface_.
+# Reusable Telegraphs
 
-# Reusable Relays
-
-If you wish, you can reuse the same _Relay_ object multiple times. The same middleware queue will be used each time you invoke that _Relay_. For example, if you are making multiple client requests:
+If you wish, you can reuse the same _Telegraph_ object multiple times. The same
+middleware queue will be used each time you invoke that _Telegraph_ instance.
+For example, if you are making multiple client requests:
 
 {% highlight php %}
 /**
@@ -209,28 +256,28 @@ If you wish, you can reuse the same _Relay_ object multiple times. The same midd
  * @var Psr\Http\Message\ResponseInterface $responseN
  */
 $request1 = ...;
-$response1 = $relay($request1, $response1);
+$response1 = $telegraph->dispatch($request1);
 
 $request2 = ...;
-$response2 = $relay($request2, $response2);
+$response2 = $telegraph->dispatch($request2);
 
 // ...
 
 $requestN = ...;
-$responseN = $relay($requestN, $responseN);
+$responseN = $telegraph->dispatch($requestN);
 {% endhighlight %}
 
-If you are certain that you will never reuse the _Relay_ instance, you can instantiate a single-use _Runner_ to avoid some minor overhead.
+If you are certain that you will never reuse the _Telegraph_ instance, you can
+instantiate a single-use _Dispatcher_ to avoid some minor overhead.
 
 {% highlight php %}
 /**
  * @var array $queue The middleware queue.
  * @var callable|null $resolver An optional queue entry resolver.
  * @var Psr\Http\Message\RequestInterface $request The HTTP request.
- * @var Psr\Http\Message\ResponseInterface $response The HTTP response.
  */
-use Relay\Runner;
+use Telegraph\Dispatcher;
 
-$runner = new Runner($queue, $resolver);
-$response = $runner($request, $response);
-{% endhighlight %}
+$dispatcher = new Dispatcher($queue, $resolver);
+$response = $dispatcher->dispatch($request);
+```
