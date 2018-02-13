@@ -4,7 +4,7 @@ layout: site
 
 <div style="font-size: 80%; text-align: center; color: gray;">For middleware to use with Relay, please review <a href="https://github.com/middlewares/psr15-middlewares">middlewares/psr15-middlewares</a>.</div>
 
-_Relay 2_ is a [PSR-15 server request handler][RequestHandlerInterface] (aka "dispatcher") for a queue of [PSR-15 middleware][MiddlewareInterface] entries.
+_Relay_ is a [PSR-15 server request handler][RequestHandlerInterface] (aka "dispatcher") for a queue of [PSR-15 middleware][MiddlewareInterface] entries.
 
 ## Request Handling
 
