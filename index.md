@@ -1,5 +1,6 @@
 ---
 layout: site2
+redirect_from: "/2.x"
 ---
 
 <div style="font-size: 80%; text-align: center; color: gray;">For middleware to use with Relay, please review <a href="https://github.com/middlewares/psr15-middlewares">middlewares/psr15-middlewares</a>.</div>
